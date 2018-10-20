@@ -1,4 +1,4 @@
-library(tidyverse)
+library(dplyr)
 library(readODS)
 library(reshape2)
 
@@ -7,11 +7,23 @@ mydata <- read_ods("Example_CV.ods", col_names = FALSE)
 # check number of rows, check number of separate tables
 n_rows <- nrow(mydata)
 n_tables <- n_rows/9
-  
-start_table <- seq(1, n_rows, 9)
-end_table <- seq(9, n_rows, 9)
 
+start_table <- seq(1, n_rows, 9)
+end_table <- start_table + 8
 mediums <- c("LB10", "TSB", "BHI", "M63")
+res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
+  raw_data <- as.matrix(ith_table[-1, ])
+  class(raw_data) <- "numeric"
+  colnames(raw_data) <- ith_table[1, ]
+  rownames(raw_data) <- NULL
+  
+  rbind(cbind(melt(raw_data[, -c(1, 12)]), mediums = unlist(lapply(mediums, rep, 4))),
+        cbind(melt(raw_data[, c(1, 12)]), mediums = unlist(lapply(mediums, rep, 2)))) %>% 
+    select(-Var1) %>% 
+    rename(strain = Var2)
+}) %>% bind_rows()
+
+
 # empty list to override bind_rows
 datalist = list()
 
@@ -28,7 +40,7 @@ for (i in seq(1, n_tables)) {
   strains <- unique(as.integer(strains_data[1,]))
   strains_results <- strains_data[-1,]
   strains_results <- strains_results %>% unlist %>% matrix(nrow = 6)
-
+  
   mresults <- melt(strains_results, varnames = c("row", "col")) %>% 
     mutate(row = factor(row), 
            col = factor(col))
@@ -41,7 +53,7 @@ for (i in seq(1, n_tables)) {
   mplate_scheme <- melt(plate_scheme, varnames = c("row", "col"), value.name = "description") %>% 
     mutate(row = factor(row), 
            col = factor(col))
-
+  
   # create single df from single table
   datalist[[i]] <- inner_join(mplate_scheme, mresults, by = c("row" = "row", "col" = "col")) %>% 
     filter(!is.na(description)) %>% 
@@ -51,7 +63,8 @@ for (i in seq(1, n_tables)) {
            temp = sapply(strsplit(conditions, split = " "), first), 
            replicate = rep(1:3, times = nrow(mresults)/3),
            surface = sapply(strsplit(conditions, split = " "), last))  %>%
-    select(strain, medium, value, replicate, temp, surface) } 
+    select(strain, medium, value, replicate, temp, surface) 
+} 
 # %>% 
 #   bind_rows()  # bind rows doesnt work
 
