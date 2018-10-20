@@ -11,17 +11,19 @@ n_tables <- n_rows/9
 start_table <- seq(1, n_rows, 9)
 end_table <- start_table + 8
 mediums <- c("LB10", "TSB", "BHI", "M63")
-res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
-  raw_data <- as.matrix(ith_table[-1, ])
-  class(raw_data) <- "numeric"
-  colnames(raw_data) <- ith_table[1, ]
-  rownames(raw_data) <- NULL
-  
-  rbind(cbind(melt(raw_data[, -c(1, 12)]), mediums = unlist(lapply(mediums, rep, 4))),
-        cbind(melt(raw_data[, c(1, 12)]), mediums = unlist(lapply(mediums, rep, 2)))) %>% 
-    select(-Var1) %>% 
-    rename(strain = Var2)
-}) %>% bind_rows()
+
+# przerobić
+# res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
+#   raw_data <- as.matrix(ith_table[-1, ])
+#   class(raw_data) <- "numeric"
+#   colnames(raw_data) <- ith_table[1, ]
+#   rownames(raw_data) <- NULL
+# 
+#   rbind(cbind(melt(raw_data[, -c(1, 12)]), mediums = unlist(lapply(mediums, rep, 4))),
+#         cbind(melt(raw_data[, c(1, 12)]), mediums = unlist(lapply(mediums, rep, 2)))) %>%
+#     select(-Var1) %>%
+#     rename(strain = Var2)
+# }) %>% bind_rows()
 
 
 # empty list to override bind_rows
@@ -69,4 +71,35 @@ for (i in seq(1, n_tables)) {
 #   bind_rows()  # bind rows doesnt work
 
 
-all_results = do.call(rbind, datalist)
+all_results <- do.call(rbind, datalist)
+
+
+
+library(ggplot2)
+library(ggbeeswarm)
+
+ggplot(all_results, aes(x = strain, y = value, color = temp, shape = surface)) +
+  geom_boxplot() +
+  facet_wrap(~ medium) +
+  theme_bw()
+
+
+ggplot(all_results, aes(x = strain, y = value, color = temp, shape = surface)) +
+  geom_quasirandom() +
+  facet_wrap(~ medium) +
+  theme_bw()
+
+group_by(all_results, strain, medium, temp, surface, replicate) %>%
+  summarise(value = median(value)) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
+  geom_point(size = 3) +
+  facet_wrap(~ medium) +
+  theme_bw()
+
+# group_by(all_results, strain, medium, temp, surface, replicate) %>%
+#   mutate(value = value/max(value)) %>%
+#   ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
+#   geom_quasirandom() +
+#   facet_wrap(~ medium) +
+#   theme_bw()
