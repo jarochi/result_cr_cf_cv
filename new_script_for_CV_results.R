@@ -12,6 +12,8 @@ start_table <- seq(1, n_rows, 9)
 end_table <- seq(9, n_rows, 9)
 
 mediums <- c("LB10", "TSB", "BHI", "M63")
+# empty list to override bind_rows
+datalist = list()
 
 for (i in seq(1, n_tables)) {
   # read start and end of single table
@@ -39,9 +41,9 @@ for (i in seq(1, n_tables)) {
   mplate_scheme <- melt(plate_scheme, varnames = c("row", "col"), value.name = "description") %>% 
     mutate(row = factor(row), 
            col = factor(col))
-  
+
   # create single df from single table
-  inner_join(mplate_scheme, mresults, by = c("row" = "row", "col" = "col")) %>% 
+  datalist[[i]] <- inner_join(mplate_scheme, mresults, by = c("row" = "row", "col" = "col")) %>% 
     filter(!is.na(description)) %>% 
     mutate(description = as.character(description), 
            strain = sapply(strsplit(description, split = "-"), first),
@@ -49,7 +51,9 @@ for (i in seq(1, n_tables)) {
            temp = sapply(strsplit(conditions, split = " "), first), 
            replicate = rep(1:3, times = nrow(mresults)/3),
            surface = sapply(strsplit(conditions, split = " "), last))  %>%
-    select(strain, medium, value, replicate, temp, surface) } %>% 
-  bind_rows()  # bind rows doesnt work
+    select(strain, medium, value, replicate, temp, surface) } 
+# %>% 
+#   bind_rows()  # bind rows doesnt work
 
-  
+
+all_results = do.call(rbind, datalist)
