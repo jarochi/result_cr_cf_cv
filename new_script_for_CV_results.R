@@ -18,7 +18,7 @@ for (i in seq(1, n_tables)) {
   x <- start_table[i]
   y <- end_table[i]
   raw_data <- mydata[x:y,]
-  # raw_data <- mydata[1:9,]      TEST
+  # raw_data <- mydata[1:9,]     # TEST
   # grab conditions
   conditions <- raw_data[1,1]
   # transform single table
@@ -40,15 +40,16 @@ for (i in seq(1, n_tables)) {
     mutate(row = factor(row), 
            col = factor(col))
   
-  # create single df from single table    >>> without reps <<<
+  # create single df from single table
   inner_join(mplate_scheme, mresults, by = c("row" = "row", "col" = "col")) %>% 
     filter(!is.na(description)) %>% 
     mutate(description = as.character(description), 
            strain = sapply(strsplit(description, split = "-"), first),
            medium = sapply(strsplit(description, split = "-"), last),
-           temp = sapply(strsplit(conditions, split = " "), first),       
+           temp = sapply(strsplit(conditions, split = " "), first), 
+           replicate = rep(1:3, times = nrow(mresults)/3),
            surface = sapply(strsplit(conditions, split = " "), last))  %>%
-    select(strain, medium, value, temp, surface) } %>% 
+    select(strain, medium, value, replicate, temp, surface) } %>% 
   bind_rows()  # bind rows doesnt work
 
   
