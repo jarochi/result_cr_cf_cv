@@ -2,11 +2,12 @@ library(dplyr)
 library(readODS)
 library(reshape2)
 
-mydata <- read_ods("Example_CV.ods", col_names = FALSE)
+# mydata <- read_ods("Example_CV.ods", col_names = FALSE)
+mydata <- read_ods("measure1.ods", col_names = FALSE)
 
 # check number of rows, check number of separate tables
 n_rows <- nrow(mydata)
-n_tables <- n_rows/9
+n_tables <- ceiling(n_rows/9)
 
 start_table <- seq(1, n_rows, 9)
 end_table <- start_table + 8
