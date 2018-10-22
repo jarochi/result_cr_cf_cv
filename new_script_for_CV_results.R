@@ -19,10 +19,19 @@ res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
   class(raw_data) <- "numeric"
   colnames(raw_data) <- ith_table[1, ]
   rownames(raw_data) <- NULL
-  cbind(melt(raw_data[, -c(1, ncol(raw_data))]), mediums = unlist(lapply(mediums, rep, 4))) %>% 
-    select(-Var1) %>%
-    rename(strain = Var2)
-}) %>% bind_rows()
+
+  not_NA_rows <- !apply(raw_data, 1, function(i) mean(is.na(i))) > 0.7
+  not_NA_cols <- !apply(raw_data, 2, function(i) mean(is.na(i))) > 0.7
+  if(sum(dim(raw_data[not_NA_rows, not_NA_cols])) == 0) {
+    data.frame()
+  } else {
+    cbind(melt(raw_data[not_NA_rows, not_NA_cols]), medium = unlist(lapply(mediums, rep, 3))) %>% 
+      select(-Var1) %>%
+      rename(strain = Var2)
+  }
+
+}) %>%  bind_rows()
+
 
 
 # empty list to override bind_rows
