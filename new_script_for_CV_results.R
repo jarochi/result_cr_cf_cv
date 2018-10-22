@@ -14,17 +14,15 @@ end_table <- start_table + 8
 mediums <- c("LB10", "TSB", "BHI", "M63")
 
 # przerobić
-# res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
-#   raw_data <- as.matrix(ith_table[-1, ])
-#   class(raw_data) <- "numeric"
-#   colnames(raw_data) <- ith_table[1, ]
-#   rownames(raw_data) <- NULL
-# 
-#   rbind(cbind(melt(raw_data[, -c(1, 12)]), mediums = unlist(lapply(mediums, rep, 4))),
-#         cbind(melt(raw_data[, c(1, 12)]), mediums = unlist(lapply(mediums, rep, 2)))) %>%
-#     select(-Var1) %>%
-#     rename(strain = Var2)
-# }) %>% bind_rows()
+res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
+  raw_data <- as.matrix(ith_table[-1, ])
+  class(raw_data) <- "numeric"
+  colnames(raw_data) <- ith_table[1, ]
+  rownames(raw_data) <- NULL
+  cbind(melt(raw_data[, -c(1, ncol(raw_data))]), mediums = unlist(lapply(mediums, rep, 4))) %>% 
+    select(-Var1) %>%
+    rename(strain = Var2)
+}) %>% bind_rows()
 
 
 # empty list to override bind_rows
