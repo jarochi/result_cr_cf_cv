@@ -9,7 +9,7 @@ plate_scheme <- read.csv("plate_scheme.csv")
 start_table <- seq(1, nrow(mydata), 9)
 end_table <- start_table + 8
 
-mediums <- c("LB10", "TSB", "BHI", "M63")
+mediums <- c("LB10", "BHI", "TSB", "M63")
 
 res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
   raw_data <- as.matrix(ith_table[-1, ])
@@ -26,8 +26,6 @@ res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
   # raw_data <- raw_data %>%  mutate(temp = conditions[1],
   #        surface = conditions[2])
 
- 
-  
   not_NA_rows <- !apply(raw_data, 1, function(i) mean(is.na(i))) > 0.7
   not_NA_cols <- !apply(raw_data, 2, function(i) mean(is.na(i))) > 0.7
   if(sum(dim(raw_data[not_NA_rows, not_NA_cols])) == 0) {
