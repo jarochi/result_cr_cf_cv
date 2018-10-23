@@ -32,7 +32,7 @@ res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
     data.frame()
   } else {
     cbind(melt(raw_data[not_NA_rows, not_NA_cols]), medium = unlist(lapply(mediums, rep, 3))) %>%
-      colnames(seq(1, nrow())) %>% 
+      colnames(seq(1, nrow(raw_data))) %>% 
       inner_join(mplate_scheme, by = c("row" = "row", "col" = "col"))
       select(-Var1) %>%
       rename(strain = Var2)
@@ -50,6 +50,7 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   x <- start_table[i]
   y <- end_table[i]
   raw_data <- mydata[x:y,]
+  # raw_data <- mydata[1:9,] #TEST
   # transform single table
   strains_data <- raw_data[-c(2, 9), -c(1, 12)]
   # strains_results <- strains_data[-1,] %>% unlist %>% matrix(nrow = 6)
@@ -91,7 +92,6 @@ ggplot(all_results, aes(x = strain, y = value, color = temp, shape = surface)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-
 ggplot(all_results, aes(x = strain, y = value, color = temp, shape = surface)) +
   geom_quasirandom() +
   facet_wrap(~ medium) +
@@ -107,18 +107,37 @@ group_by(all_results, strain, medium, temp, surface, replicate) %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-group_by(all_results, strain, medium, temp, surface) %>%
-  summarise(value = median(value)) %>%
-  summarise(value = median(value)) %>%
-  ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
-  geom_point(size = 3) +
-  facet_wrap(~ medium) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
 # group_by(all_results, strain, medium, temp, surface, replicate) %>%
 #   mutate(value = value/max(value)) %>%
 #   ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
 #   geom_quasirandom() +
 #   facet_wrap(~ medium) +
 #   theme_bw()
+
+
+OD <- all_results %>% group_by(strain, medium, temp, surface) %>% summarise(avg = mean(value))
+ODc <- 0.075 # temporary, need better csv preparation
+
+# OD %>% if (avg > ODc) {mutate(former = ("no biofilm production"))} 
+
+formers <- vector()
+
+sapply(OD$avg, function(x) {
+  
+})
+  if (x < ODc){
+    formers <- c(formers, "no biofilm")
+  }
+  if (ODc < x & x < 2*ODc){
+    formers <- c(formers, "weak")
+  }
+  if (2*ODc < x & x < 4*ODc){
+    formers <- c(formers, "moderate")
+  }
+  if (4*ODc < x){
+    formers <- c(formers, "strong")
+  }
+  )
+
+
+
