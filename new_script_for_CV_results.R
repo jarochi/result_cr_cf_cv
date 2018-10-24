@@ -11,34 +11,34 @@ end_table <- start_table + 8
 
 mediums <- c("LB10", "BHI", "TSB", "M63")
 
-res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
-  raw_data <- as.matrix(ith_table[-1, ])
-
-  class(raw_data) <- "numeric"
-  colnames(raw_data) <- ith_table[1, ]
-  rownames(raw_data) <- NULL
-  
-  conditions <- strsplit(ith_table[1,1], split = " ") %>% unlist()
-  # browser()
-  # 
-  # raw_data %>% matrix(nrow = 8)
-  # 
-  # raw_data <- raw_data %>%  mutate(temp = conditions[1],
-  #        surface = conditions[2])
-
-  not_NA_rows <- !apply(raw_data, 1, function(i) mean(is.na(i))) > 0.7
-  not_NA_cols <- !apply(raw_data, 2, function(i) mean(is.na(i))) > 0.7
-  if(sum(dim(raw_data[not_NA_rows, not_NA_cols])) == 0) {
-    data.frame()
-  } else {
-    cbind(melt(raw_data[not_NA_rows, not_NA_cols]), medium = unlist(lapply(mediums, rep, 3))) %>%
-      colnames(seq(1, nrow(raw_data))) %>% 
-      inner_join(mplate_scheme, by = c("row" = "row", "col" = "col"))
-      select(-Var1) %>%
-      rename(strain = Var2)
-    browser()
-  }
-}) %>%  bind_rows()
+# res <- lapply(split(mydata, ceiling(1L:nrow(mydata)/9)), function(ith_table) {
+#   raw_data <- as.matrix(ith_table[-1, ])
+# 
+#   class(raw_data) <- "numeric"
+#   colnames(raw_data) <- ith_table[1, ]
+#   rownames(raw_data) <- NULL
+#   
+#   conditions <- strsplit(ith_table[1,1], split = " ") %>% unlist()
+#   # browser()
+#   # 
+#   # raw_data %>% matrix(nrow = 8)
+#   # 
+#   # raw_data <- raw_data %>%  mutate(temp = conditions[1],
+#   #        surface = conditions[2])
+# 
+#   not_NA_rows <- !apply(raw_data, 1, function(i) mean(is.na(i))) > 0.7
+#   not_NA_cols <- !apply(raw_data, 2, function(i) mean(is.na(i))) > 0.7
+#   if(sum(dim(raw_data[not_NA_rows, not_NA_cols])) == 0) {
+#     data.frame()
+#   } else {
+#     cbind(melt(raw_data[not_NA_rows, not_NA_cols]), medium = unlist(lapply(mediums, rep, 3))) %>%
+#       colnames(seq(1, nrow(raw_data))) %>% 
+#       inner_join(mplate_scheme, by = c("row" = "row", "col" = "col"))
+#       select(-Var1) %>%
+#       rename(strain = Var2)
+#     browser()
+#   }
+# }) %>%  bind_rows()
 
 
 
