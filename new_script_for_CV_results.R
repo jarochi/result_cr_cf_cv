@@ -4,7 +4,7 @@ library(reshape2)
 
 # mydata <- read_ods("Example_CV.ods", col_names = FALSE)
 mydata <- read_ods("measure1.ods", col_names = FALSE)
-plate_scheme <- read.csv("plate_scheme.csv")
+# plate_scheme <- read.csv("plate_scheme.csv")
 
 start_table <- seq(1, nrow(mydata), 9)
 end_table <- start_table + 8
@@ -86,19 +86,22 @@ all_results <- do.call(rbind, datalist)
 library(ggplot2)
 library(ggbeeswarm)
 
-ggplot(all_results, aes(x = strain, y = value, color = temp, shape = surface)) +
+all_results %>% mutate(conditions = paste(temp, surface)) %>% 
+ggplot(aes(x = strain, y = value, color = conditions)) +
   geom_boxplot() +
   facet_wrap(~ medium) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ggplot(all_results, aes(x = strain, y = value, color = temp, shape = surface)) +
+all_results %>% mutate(conditions = paste(temp, surface)) %>% 
+ggplot(aes(x = strain, y = value, color = conditions)) +
   geom_quasirandom() +
   facet_wrap(~ medium) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-group_by(all_results, strain, medium, temp, surface, replicate) %>%
+all_results %>% mutate(conditions = paste(temp, surface)) %>% 
+group_by(strain, medium, temp, surface, replicate) %>%
   summarise(value = median(value)) %>%
   summarise(value = median(value)) %>%
   ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
@@ -118,18 +121,12 @@ group_by(all_results, strain, medium, temp, surface, replicate) %>%
 OD <- all_results %>% group_by(strain, medium, temp, surface) %>% summarise(avg = mean(value))
 ODc <- 0.075 # temporary, need better csv preparation
 
-# OD %>% if (avg > ODc) {mutate(former = ("no biofilm production"))} 
-
-
-cut(0.001, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
-
 formers <- as.character(sapply(OD$avg, function(x) {
   cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
 }))
 
 OD <- bind_cols(OD, data_frame(formers))
 
-OD
 
 OD %>% mutate(conditions = paste(temp, surface)) %>% 
 ggplot(aes(x = strain, y = formers, fill = conditions)) +
