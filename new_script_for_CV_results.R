@@ -101,10 +101,10 @@ ggplot(aes(x = strain, y = value, color = conditions)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 all_results %>% mutate(conditions = paste(temp, surface)) %>% 
-group_by(strain, medium, temp, surface, replicate) %>%
+group_by(strain, medium, conditions, replicate) %>%
   summarise(value = median(value)) %>%
   summarise(value = median(value)) %>%
-  ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
+  ggplot(aes(x = strain, y = value, color = conditions)) +
   geom_point(size = 3) +
   facet_wrap(~ medium) +
   theme_bw() +
