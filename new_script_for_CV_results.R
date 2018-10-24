@@ -3,7 +3,8 @@ library(readODS)
 library(reshape2)
 
 # mydata <- read_ods("Example_CV.ods", col_names = FALSE)
-mydata <- read_ods("measure1.ods", col_names = FALSE)
+mydata <- read_ods("measure1.ods", col_names = FALSE)       # Asia
+mydata <- read_ods("CV RESULTS_DK.ods", col_names = FALSE)  # Dominika
 # plate_scheme <- read.csv("plate_scheme.csv")
 
 start_table <- seq(1, nrow(mydata), 9)
@@ -110,6 +111,31 @@ group_by(strain, medium, conditions, replicate) %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+# DK
+all_results %>%
+  ggplot(aes(x = strain, y = value)) +
+  geom_boxplot() +
+  facet_wrap(~ medium) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+all_results %>% 
+  ggplot(aes(x = strain, y = value)) +
+  geom_quasirandom() +
+  facet_wrap(~ medium) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+all_results %>%
+  group_by(strain, medium, replicate) %>%
+  summarise(value = median(value)) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value)) +
+  geom_point(size = 3) +
+  facet_wrap(~ medium) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 # group_by(all_results, strain, medium, temp, surface, replicate) %>%
 #   mutate(value = value/max(value)) %>%
 #   ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
@@ -138,4 +164,12 @@ ggplot(aes(x = strain, y = formers, fill = conditions)) +
   scale_y_discrete("Biofilm forming strength") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-
+# DK
+OD %>% mutate(conditions = paste(temp, surface)) %>% 
+  ggplot(aes(x = strain, y = formers)) +
+  geom_tile(color = "black", position="dodge") +
+  facet_wrap(~ medium) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Biofilm forming strength") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
