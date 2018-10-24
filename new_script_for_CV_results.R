@@ -120,24 +120,15 @@ ODc <- 0.075 # temporary, need better csv preparation
 
 # OD %>% if (avg > ODc) {mutate(former = ("no biofilm production"))} 
 
-formers <- vector()
 
-sapply(OD$avg, function(x) {
-  
-})
-  if (x < ODc){
-    formers <- c(formers, "no biofilm")
-  }
-  if (ODc < x & x < 2*ODc){
-    formers <- c(formers, "weak")
-  }
-  if (2*ODc < x & x < 4*ODc){
-    formers <- c(formers, "moderate")
-  }
-  if (4*ODc < x){
-    formers <- c(formers, "strong")
-  }
-  )
+cut(0.001, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+
+formers <- as.character(sapply(OD$avg, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+}))
+
+OD <- bind_cols(OD, data_frame(formers))
+
 
 
 
