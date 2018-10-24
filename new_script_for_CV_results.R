@@ -129,6 +129,16 @@ formers <- as.character(sapply(OD$avg, function(x) {
 
 OD <- bind_cols(OD, data_frame(formers))
 
+OD
 
+OD %>% mutate(conditions = paste(temp, surface)) %>% 
+ggplot(aes(x = strain, y = formers, fill = conditions)) +
+  geom_tile(color = "black", position="dodge") +
+  facet_wrap(~ medium) +
+  theme_bw() +
+  scale_fill_discrete("Conditions") +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Biofilm forming strength") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
