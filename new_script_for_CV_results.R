@@ -1,6 +1,8 @@
 library(dplyr)
 library(readODS)
 library(reshape2)
+library(ggplot2)
+library(ggbeeswarm)
 
 # mydata <- read_ods("Example_CV.ods", col_names = FALSE)
 mydata <- read_ods("measure1.ods", col_names = FALSE)       # Asia
@@ -79,7 +81,7 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
            temp = sapply(strsplit(conditions, split = " "), first), 
            replicate = rep(1:3, times = nrow(mplate_scheme)/3),
            surface = sapply(strsplit(conditions, split = " "), last),
-           plate_no = rep(i, times = nrow(mplate_scheme)))  %>%
+           plate_no = rep(i, times = nrow(mplate_scheme)))  %>%           # if we have strains on more than 1 plate, do przerobienia na zwykłe repeat zamiast numeru płytki
     # select(strain, medium, value, replicate, temp, surface) %>% 
     filter(!is.na(value))
   
@@ -94,9 +96,6 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
 
 all_results <- do.call(rbind, datalist)
 
-
-library(ggplot2)
-library(ggbeeswarm)
 
 all_results %>% 
   # select(strain, value, temp, surface, medium, replicate) %>% 
@@ -135,7 +134,7 @@ all_results %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 all_results %>% 
-  ggplot(aes(x = strain, y = value)) +
+  ggplot(aes(x = strain, y = value, color = plate_no)) +
   geom_quasirandom() +
   facet_wrap(~ medium) +
   theme_bw() +
@@ -145,7 +144,7 @@ all_results %>%
   group_by(strain, medium, replicate) %>%
   summarise(value = median(value)) %>%
   summarise(value = median(value)) %>%
-  ggplot(aes(x = strain, y = value)) +
+  ggplot(aes(x = strain, y = value, color = plate_no)) +
   geom_point(size = 3) +
   facet_wrap(~ medium) +
   theme_bw() +
@@ -169,8 +168,9 @@ all_results %>%
 # OD <- bind_cols(OD, data_frame(formers))
 
 
-OD %>% mutate(conditions = paste(temp, surface)) %>% 
-ggplot(aes(x = strain, y = formers, fill = conditions)) +
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+ggplot(aes(x = strain, y = strength, fill = conditions)) +
   geom_tile(color = "black", position="dodge") +
   facet_wrap(~ medium) +
   theme_bw() +
@@ -180,8 +180,9 @@ ggplot(aes(x = strain, y = formers, fill = conditions)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 # DK
-OD %>% mutate(conditions = paste(temp, surface)) %>% 
-  ggplot(aes(x = strain, y = formers)) +
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  ggplot(aes(x = strain, y = strength)) +
   geom_tile(color = "black", position="dodge") +
   facet_wrap(~ medium) +
   theme_bw() +
