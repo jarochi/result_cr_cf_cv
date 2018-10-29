@@ -53,6 +53,8 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   raw_data <- mydata[x:y,]
   # raw_data <- mydata[1:9,] #TEST
   # transform single table
+  # ODc <- mean(raw_data[7:8, 11])        # neg control for biofilm strength assumption
+  ODc <- 0.075                          # temp for Asia
   strains_data <- raw_data[-c(2, 9), -c(1, 12)]
   # strains_results <- strains_data[-1,] %>% unlist %>% matrix(nrow = 6)
   mresults <- melt(strains_data[-1,] %>% unlist %>% matrix(nrow = 6), varnames = c("row", "col")) %>% 
@@ -69,16 +71,25 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   
   # create single df from single table
   conditions <- raw_data[1,1] # grab conditions
-  datalist[[i]] <- inner_join(mplate_scheme, mresults, by = c("row" = "row", "col" = "col")) %>% 
+  all_res <- inner_join(mplate_scheme, mresults, by = c("row" = "row", "col" = "col")) %>% 
     filter(!is.na(description)) %>% 
     mutate(description = as.character(description), 
            strain = sapply(strsplit(description, split = "-"), first),
            medium = sapply(strsplit(description, split = "-"), last),
            temp = sapply(strsplit(conditions, split = " "), first), 
-           replicate = rep(1:3, times = nrow(mresults)/3),
-           surface = sapply(strsplit(conditions, split = " "), last))  %>%
-    select(strain, medium, value, replicate, temp, surface) %>% 
+           replicate = rep(1:3, times = nrow(mplate_scheme)/3),
+           surface = sapply(strsplit(conditions, split = " "), last),
+           plate_no = rep(i, times = nrow(mplate_scheme)))  %>%
+    # select(strain, medium, value, replicate, temp, surface) %>% 
     filter(!is.na(value))
+  
+  # add to table above strength of biofilm formation
+  OD <- all_res %>% group_by(strain, medium, temp, surface) %>% summarise(avg = mean(value)) %>% 
+    mutate(strength = as.character(sapply(avg, function(x) {
+      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+    })))
+  
+  datalist[[i]] <- inner_join(all_res, OD, by = c("strain", "medium", "temp", "surface"))
 } 
 
 all_results <- do.call(rbind, datalist)
@@ -87,21 +98,25 @@ all_results <- do.call(rbind, datalist)
 library(ggplot2)
 library(ggbeeswarm)
 
-all_results %>% mutate(conditions = paste(temp, surface)) %>% 
+all_results %>% 
+  # select(strain, value, temp, surface, medium, replicate) %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
 ggplot(aes(x = strain, y = value, color = conditions)) +
   geom_boxplot() +
   facet_wrap(~ medium) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-all_results %>% mutate(conditions = paste(temp, surface)) %>% 
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
 ggplot(aes(x = strain, y = value, color = conditions)) +
   geom_quasirandom() +
   facet_wrap(~ medium) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-all_results %>% mutate(conditions = paste(temp, surface)) %>% 
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
 group_by(strain, medium, conditions, replicate) %>%
   summarise(value = median(value)) %>%
   summarise(value = median(value)) %>%
@@ -144,14 +159,14 @@ all_results %>%
 #   theme_bw()
 
 
-OD <- all_results %>% group_by(strain, medium, temp, surface) %>% summarise(avg = mean(value))
-ODc <- 0.075 # temporary, need better csv preparation
-
-formers <- as.character(sapply(OD$avg, function(x) {
-  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
-}))
-
-OD <- bind_cols(OD, data_frame(formers))
+# OD <- all_results %>% group_by(strain, medium, temp, surface) %>% summarise(avg = mean(value))
+# ODc <- 0.075 # temporary, need better csv preparation
+# 
+# formers <- as.character(sapply(OD$avg, function(x) {
+#   cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+# }))
+# 
+# OD <- bind_cols(OD, data_frame(formers))
 
 
 OD %>% mutate(conditions = paste(temp, surface)) %>% 
