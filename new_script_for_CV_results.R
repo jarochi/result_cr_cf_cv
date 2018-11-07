@@ -55,8 +55,8 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   raw_data <- mydata[x:y,]
   # raw_data <- mydata[1:9,] #TEST
   # transform single table
-  # ODc <- mean(raw_data[7:8, 11])        # neg control for biofilm strength assumption
-  ODc <- 0.075                          # temp for Asia
+  # ODc <- mean(raw_data[7:8, 11])        # neg control for biofilm strength assumption       <!!!!!!!!!!!!!!!!!!!!!!!!
+  ODc <- 0.075                          # temp for Asia                                       <!!!!!!!!!!!!!!!!!!!!!!!!
   strains_data <- raw_data[-c(2, 9), -c(1, 12)]
   # strains_results <- strains_data[-1,] %>% unlist %>% matrix(nrow = 6)
   mresults <- melt(strains_data[-1,] %>% unlist %>% matrix(nrow = 6), varnames = c("row", "col")) %>% 
@@ -96,7 +96,7 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
 
 all_results <- do.call(rbind, datalist)
 
-
+# JS
 all_results %>% 
   # select(strain, value, temp, surface, medium, replicate) %>% 
   mutate(conditions = paste(temp, surface)) %>% 
@@ -106,6 +106,7 @@ ggplot(aes(x = strain, y = value, color = conditions)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+# JS
 all_results %>% 
   mutate(conditions = paste(temp, surface)) %>% 
 ggplot(aes(x = strain, y = value, color = conditions)) +
@@ -114,6 +115,7 @@ ggplot(aes(x = strain, y = value, color = conditions)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+# JS
 all_results %>% 
   mutate(conditions = paste(temp, surface)) %>% 
 group_by(strain, medium, conditions, replicate) %>%
@@ -133,6 +135,7 @@ all_results %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+# DK
 all_results %>% 
   ggplot(aes(x = strain, y = value, color = plate_no)) +
   geom_quasirandom() +
@@ -140,6 +143,7 @@ all_results %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+# DK
 all_results %>%
   group_by(strain, medium, replicate) %>%
   summarise(value = median(value)) %>%
@@ -150,24 +154,7 @@ all_results %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# group_by(all_results, strain, medium, temp, surface, replicate) %>%
-#   mutate(value = value/max(value)) %>%
-#   ggplot(aes(x = strain, y = value, color = temp, shape = surface)) +
-#   geom_quasirandom() +
-#   facet_wrap(~ medium) +
-#   theme_bw()
-
-
-# OD <- all_results %>% group_by(strain, medium, temp, surface) %>% summarise(avg = mean(value))
-# ODc <- 0.075 # temporary, need better csv preparation
-# 
-# formers <- as.character(sapply(OD$avg, function(x) {
-#   cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
-# }))
-# 
-# OD <- bind_cols(OD, data_frame(formers))
-
-
+# JS
 all_results %>% 
   mutate(conditions = paste(temp, surface)) %>% 
 ggplot(aes(x = strain, y = strength, fill = conditions)) +
