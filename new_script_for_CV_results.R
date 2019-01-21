@@ -57,8 +57,8 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   raw_data <- mydata[x:y,]
   # raw_data <- mydata[1:9,] #TEST
   # transform single table
-  # ODc <- mean(as.numeric(raw_data[7:8, 12]))        # neg control for biofilm strength assumption       <!!!!!!!!!!!!!!!!!!!!!!!!
-  ODc <- 0.125                          # temp for Asia                                       <!!!!!!!!!!!!!!!!!!!!!!!!
+  ODc <- mean(as.numeric(raw_data[7:8, 12]))        # neg control for biofilm strength assumption       <!!!!!!!!!!!!!!!!!!!!!!!!
+  # ODc <- 0.125                          # temp for Asia                                       <!!!!!!!!!!!!!!!!!!!!!!!!
   strains_data <- raw_data[-c(2, 9), -c(1, 12)]
   # strains_results <- strains_data[-1,] %>% unlist %>% matrix(nrow = 6)
   mresults <- melt(strains_data[-1,] %>% unlist %>% matrix(nrow = 6), varnames = c("row", "col")) %>% 
@@ -82,10 +82,10 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
            medium = sapply(strsplit(description, split = "-"), last),
            temp = sapply(strsplit(conditions, split = " "), first), 
            replicate = rep(1:3, times = nrow(mplate_scheme)/3),
-           surface = sapply(strsplit(conditions, split = " "), last)
-           # plate_no = rep(i, times = nrow(mplate_scheme))             # if we have strains on more than 1 plate, do przerobienia na zwykłe repeat zamiast numeru płytki
-           # rep_no = ifelse(i<51, "1", "2"))  %>%                       # DK liczpa powtórzeń
-   ) %>% 
+           surface = sapply(strsplit(conditions, split = " "), last),
+           plate_no = rep(i, times = nrow(mplate_scheme)),             # if we have strains on more than 1 plate, do przerobienia na zwykłe repeat zamiast numeru płytki
+           rep_no = ifelse(i<51, "1", "2"))  %>%                       # DK liczpa powtórzeń
+   # ) %>% 
     # rep(1:3, by = 12, each = 12, times = 4)
     # select(strain, medium, value, replicate, temp, surface) %>% 
     filter(!is.na(value))
@@ -285,8 +285,7 @@ all_results[1:2976,] %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         legend.position="none")
 
-all_results[2977:nrow(all_results),] %>% 
-  na.omit() %>% 
+gogo[745:nrow(gogo),] %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   ggplot(aes(x = strain, y = strength, fill = strength)) +
   geom_tile(color = "black", position="dodge") +
@@ -296,3 +295,9 @@ all_results[2977:nrow(all_results),] %>%
   scale_y_discrete("Biofilm forming strength") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         legend.position="none")
+
+
+
+
+gogo <- all_results %>% filter(medium == "M63") %>% arrange(strain)
+
