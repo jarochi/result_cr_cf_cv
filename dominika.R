@@ -166,7 +166,7 @@ all_results %>%
   na.omit() %>% 
   filter(medium == "BHI") %>%
   mutate(conditions = paste(temp, surface)) %>% 
-  ggplot(aes(x = strain, y = strength, fill = strength)) +
+  ggplot(aes(x = strain, y = rep_no, fill = strength)) +
   geom_tile(color = "black", position="dodge") +
   facet_wrap(c("medium", "rep_no"), ncol = 1) +
   theme_bw() +
@@ -174,3 +174,36 @@ all_results %>%
   scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
         legend.position="none")
+
+
+
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  ggplot(aes(x = strain, y = rep_no, fill = strength)) +
+  geom_tile(color = "black") +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+
+
+all_results[1:2976,] %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  ggplot(aes(x = strain, y = rep_no, fill = strength)) +
+  geom_tile(color = "black") +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+
+all_results[2977:nrow(all_results),] %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  ggplot(aes(x = strain, y = rep_no, fill = strength)) +
+  geom_tile(color = "black") +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))

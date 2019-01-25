@@ -121,14 +121,14 @@ all_results %>%
 
 all_results %>% 
   mutate(conditions = paste(temp, surface)) %>% 
-  # filter(conditions == "28 PP") %>%
-  ggplot(aes(x = strain, y = strength, fill = conditions)) +
+  # filter(temp == "37") %>%
+  ggplot(aes(x = strain, y = rep_no, fill = strength)) +
   geom_tile(color = "black", position="dodge") +
-  facet_wrap(c("rep_no", "medium"), ncol = 4) +
+  facet_wrap(c("medium", "conditions"), ncol = 4) +
   theme_bw() +
   scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength") +
+  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
@@ -141,7 +141,7 @@ all_results %>%
   theme_bw() +
   scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength") +
+  scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
@@ -156,3 +156,12 @@ all_results %>%
   scale_x_discrete("Strain") +
   scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+zo <- all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  dcast(strength ~ strain + rep_no + conditions + medium)
+
+
+
