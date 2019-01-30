@@ -3,6 +3,7 @@ title: "sal_eco"
 output: html_document
 ---
 
+
 ```{r setup, include=FALSE}
 library(dplyr)
 library(readODS)
@@ -144,7 +145,8 @@ all_results_D <- all_results_D[order(all_results_D$strain),] %>%
 
 ## Wszystkie wyniki jako boxplot
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, out.width="200%"}
+
 all_results %>% 
   group_by(strain, medium, rep_no, temp, surface) %>% 
   mutate(conditions = paste(temp, surface)) %>% 
