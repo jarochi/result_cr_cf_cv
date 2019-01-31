@@ -3,6 +3,11 @@ title: "sal_eco"
 output: html_document
 ---
 
+<style type="text/css">
+body .main-container {
+        max-width: 4000px;
+    }
+</style>
 
 ```{r setup, include=FALSE}
 library(dplyr)
@@ -145,7 +150,7 @@ all_results_D <- all_results_D[order(all_results_D$strain),] %>%
 
 ## Wszystkie wyniki jako boxplot
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, out.width="200%"}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 
 all_results %>% 
   group_by(strain, medium, rep_no, temp, surface) %>% 
@@ -153,8 +158,9 @@ all_results %>%
   ggplot(aes(x = strain, y = value, color = conditions)) +
   geom_boxplot() +
   facet_wrap(c("medium", "rep_no"), ncol=3) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme_bw(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
 ```
 
 ## Śednie wyników
