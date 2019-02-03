@@ -3,6 +3,11 @@ title: "sal_eco"
 output: html_document
 ---
 
+<style type="text/css">
+body .main-container {
+        max-width: 4000px;
+    }
+</style>
 
 ```{r setup, include=FALSE}
 library(dplyr)
@@ -143,9 +148,9 @@ all_results_D <- all_results_D[order(all_results_D$strain),] %>%
   mutate(ID = seq(1:nrow(all_results_D)))
 ```
 
-## Wszystkie wyniki jako boxplot
+## Wszystkie wyniki jako boxplot Asia
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, out.width="200%"}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 
 all_results %>% 
   group_by(strain, medium, rep_no, temp, surface) %>% 
@@ -153,13 +158,17 @@ all_results %>%
   ggplot(aes(x = strain, y = value, color = conditions)) +
   geom_boxplot() +
   facet_wrap(c("medium", "rep_no"), ncol=3) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme_bw(base_size = 12) +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Conditions") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
 ```
 
 ## Śednie wyników
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results %>% 
   # filter(medium == "LB10") %>%
   mutate(conditions = paste(temp, surface)) %>% 
@@ -169,12 +178,16 @@ all_results %>%
   geom_point(size = 3) +
   facet_wrap(c("medium", "rep_no"), ncol = 3) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Conditions") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
 ```
 
 ## Jakie biofilmy
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   # filter(temp == "37") %>%
@@ -182,10 +195,12 @@ all_results %>%
   geom_tile(color = "black") +
   facet_wrap(c("medium", "conditions"), ncol = 4) +
   theme_bw() +
-  scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
+  scale_y_continuous("Repeat") +
+  scale_fill_discrete("Biofilm forming strength") +
   # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
 ```
 
 
@@ -193,20 +208,54 @@ all_results %>%
 
 
 
-## Wszystkie wyniki
+## Wszystkie wyniki Dominika
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>% 
   ggplot(aes(x = strain, y = value, color = rep_no)) +
   geom_quasirandom() +
   facet_wrap(~ medium, ncol = 1) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## Wszystkie wyniki Dominika rozbite 1/2
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[1:2976,] %>%
+  ggplot(aes(x = strain, y = value, color = rep_no)) +
+  geom_quasirandom() +
+  facet_wrap(~ medium, ncol = 1) +
+  theme_bw(base_size = 12) +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
+        legend.position = "bottom")
+```
+
+## Wszystkie wyniki Dominika rozbite 2/2
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[2977:nrow(all_results_D),] %>% 
+  ggplot(aes(x = strain, y = value, color = rep_no)) +
+  geom_quasirandom() +
+  facet_wrap(~ medium, ncol = 1) +
+  theme_bw(base_size = 12) +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
+        legend.position = "bottom")
 ```
 
 ## Śednie wyników
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>%
   group_by(strain, medium, rep_no) %>%
   summarise(value = median(value)) %>%
@@ -214,12 +263,50 @@ all_results_D %>%
   geom_point(size = 3) +
   facet_wrap(~ medium, ncol = 1) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
 ```
 
-## Jakie biofilmy
+## Śednie wyników rozbite 1/2
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[1:2976,] %>% 
+  group_by(strain, medium, rep_no) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = rep_no)) +
+  geom_point(size = 3) +
+  facet_wrap(~ medium, ncol = 1) +
+  theme_bw(base_size = 12) +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
+        legend.position = "bottom")
+```
+
+## Śednie wyników rozbite 2/2
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[2977:nrow(all_results_D),] %>% 
+  group_by(strain, medium, rep_no) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = rep_no)) +
+  geom_point(size = 3) +
+  facet_wrap(~ medium, ncol = 1) +
+  theme_bw(base_size = 12) +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
+        legend.position = "bottom")
+```
+
+## Jakie biofilmy całość
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   ggplot(aes(x = strain, y = rep_no, fill = strength)) +
@@ -227,34 +314,43 @@ all_results_D %>%
   facet_wrap(c("medium"), ncol = 1) +
   theme_bw() +
   scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength") +
   # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
 ```
 
-## Jakie biofilmy
+## Jakie biofilmy rozbite 1/2
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[1:2976,] %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   ggplot(aes(x = strain, y = rep_no, fill = strength)) +
   geom_tile(color = "black") +
   facet_wrap(c("medium"), ncol = 1) +
-  theme_bw() +
+  theme_bw(base_size = 12) +
   scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength") +
   # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
+        legend.position = "bottom")
 ```
 
-## Jakie biofilmy
+## Jakie biofilmy 2/2
 
-```{r, echo=FALSE,message=FALSE,warning=FALSE,fig.width=9,fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[2977:nrow(all_results_D),] %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   ggplot(aes(x = strain, y = rep_no, fill = strength)) +
   geom_tile(color = "black") +
   facet_wrap(c("medium"), ncol = 1) +
-  theme_bw() +
+  theme_bw(base_size = 12) +
   scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength") +
   # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
+        legend.position = "bottom")
 ```
