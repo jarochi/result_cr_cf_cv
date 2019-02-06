@@ -171,8 +171,15 @@ all_results %>%
   mutate(conditions = paste(temp, surface)) %>% 
   group_by(strain, medium, strength, conditions) %>%
   summarise() %>% 
-  spread(strength, strength)
+  ungroup() %>% 
+  dcast(strain + medium ~ conditions, fun.aggregate = length)
 
+all_results %>%
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, strength, conditions) %>%
+  summarise() %>% 
+  group_by(strain, medium, conditions) %>% 
+  summarise(n = length(strength))
 
 
  
