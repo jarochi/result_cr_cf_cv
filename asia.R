@@ -167,16 +167,7 @@ all_results %>%
 
 
 
-
 all_results %>%
-  mutate(conditions = paste(temp, surface)) %>% 
-  group_by(strain, medium, rep_no, strength, conditions) %>%
-  summarise() %>% 
-  spread(rep_no, rep_no)
-
-
-
-a <- all_results %>%
   mutate(conditions = paste(temp, surface)) %>% 
   group_by(strain, medium, strength, conditions) %>%
   summarise() %>% 
