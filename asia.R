@@ -167,17 +167,17 @@ all_results %>%
 
 
 
-all_results %>%
+a <- all_results %>%
   mutate(conditions = paste(temp, surface)) %>% 
   group_by(strain, medium, strength, conditions) %>%
   summarise() %>% 
   spread(strength, strength)
 
 
-
  
 a[["biofilm_strength"]] %>% unique() 
   
+
 a %>%
   mutate(match = ifelse(a[["biofilm_strength"]] == "NA absence NA NA" || a[["biofilm_strength"]] == "NA NA NA weak", "yes", "no"))
 
