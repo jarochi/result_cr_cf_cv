@@ -168,18 +168,18 @@ all_results %>%
 
 
 all_results %>%
-  mutate(conditions = paste(temp, surface)) %>% 
+  mutate(conditions = paste0(temp, "_", surface, "_", rep_no)) %>% 
   group_by(strain, medium, strength, conditions) %>%
-  summarise() %>% 
-  ungroup() %>% 
-  dcast(strain + medium ~ conditions, fun.aggregate = length)
+  summarise(n = length(strength)) %>% 
+  arrange(desc(n))
 
 all_results %>%
   mutate(conditions = paste(temp, surface)) %>% 
   group_by(strain, medium, strength, conditions) %>%
   summarise() %>% 
   group_by(strain, medium, conditions) %>% 
-  summarise(n = length(strength))
+  summarise(n = length(strength),
+            res = paste0(strength, collapse = ""))
 
 
  
