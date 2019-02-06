@@ -166,36 +166,26 @@ all_results %>%
 ##### Koniec wykresów
 
 
-
+# number of replicates
 all_results %>%
   mutate(conditions = paste0(temp, "_", surface, "_", rep_no)) %>% 
   group_by(strain, medium, strength, conditions) %>%
   summarise(n = length(strength)) %>% 
   arrange(desc(n))
 
-all_results %>%
-  mutate(conditions = paste(temp, surface)) %>% 
-  group_by(strain, medium, strength, conditions) %>%
-  summarise() %>% 
-  group_by(strain, medium, conditions) %>% 
-  summarise(n = length(strength),
-            res = paste0(strength, collapse = ""))
+frac_biofilm <- all_results %>%
+  mutate(conditions = paste0(temp, "_", surface)) %>% 
+  group_by(conditions, strain, medium, strength) %>% 
+  summarise(n = length(strength)) %>% 
+  mutate(frac = n/sum(n)) %>% 
+  select(-n)
 
+# multiple types of biofilm formed
+filter(frac_biofilm, frac != 1)
 
- 
-a[["biofilm_strength"]] %>% unique() 
-  
-a %>%
-  mutate(match = ifelse(a[["biofilm_strength"]] == "NA absence NA NA" || a[["biofilm_strength"]] == "NA NA NA weak", "yes", "no"))
+# only one type of biofilm formed
+filter(frac_biofilm, frac == 1)
 
-
-str_detect(a[["biofilm_strength"]], c("NA absence NA NA", "NA NA NA weak"))
-
-
-  
-  mutate(match = ifelse(all_results[["moderate"]] == all_results[["absence"]] == all_results[["strong"]] == all_results[["weak"]], "yes", "no"))
-  
-  mutate(match = ifelse(c((all_results[["moderate"]] == all_results[["absence"]]) == (all_results[["strong"]] == all_results[["weak"]])), "yes", "no"))
-
+dcast(frac_biofilm, conditions + strain + medium ~ strength, fill = 0)
 
 
