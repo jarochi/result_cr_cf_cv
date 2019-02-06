@@ -148,7 +148,21 @@ all_results_D <- all_results_D[order(all_results_D$strain),] %>%
   mutate(ID = seq(1:nrow(all_results_D)))
 ```
 
-## Wszystkie wyniki jako boxplot Asia
+## Overview
+Created: 2019-02-05.
+Parsed: `r Sys.Date()`
+
+
+## Aim of the project
+
+
+
+## Strains used
+
+For the experiment we have used collection of **Salmonella** ($n \approx 50$) and **Escherichia** ($n \approx 200$) strains.
+
+
+## Salmonella | All results showed as boxplot
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 
@@ -166,7 +180,7 @@ all_results %>%
         legend.position = "bottom")
 ```
 
-## Śednie wyników
+## Salmonella | Average fluorescence intensity
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results %>% 
@@ -185,7 +199,7 @@ all_results %>%
         legend.position = "bottom")
 ```
 
-## Jakie biofilmy
+## Salmonella | Biofilm forming strength
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results %>% 
@@ -203,12 +217,15 @@ all_results %>%
         legend.position = "bottom")
 ```
 
+## Comments
+
+6204 was repeated 6 times
 
 
 
 
 
-## Wszystkie wyniki Dominika
+## E. coli | All results showed as boxplot
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>% 
@@ -223,7 +240,7 @@ all_results_D %>%
         legend.position = "bottom")
 ```
 
-## Wszystkie wyniki Dominika rozbite 1/2
+## E. coli | All results showed as boxplot, split 1/2
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[1:2976,] %>%
@@ -238,7 +255,7 @@ all_results_D[1:2976,] %>%
         legend.position = "bottom")
 ```
 
-## Wszystkie wyniki Dominika rozbite 2/2
+## E. coli | All results showed as boxplot, split 2/2
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[2977:nrow(all_results_D),] %>% 
@@ -253,7 +270,7 @@ all_results_D[2977:nrow(all_results_D),] %>%
         legend.position = "bottom")
 ```
 
-## Śednie wyników
+## E. coli | Average fluorescence intensity
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>%
@@ -270,7 +287,7 @@ all_results_D %>%
         legend.position = "bottom")
 ```
 
-## Śednie wyników rozbite 1/2
+## E. coli | Average fluorescence intensity, split 1/2
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[1:2976,] %>% 
@@ -287,7 +304,7 @@ all_results_D[1:2976,] %>%
         legend.position = "bottom")
 ```
 
-## Śednie wyników rozbite 2/2
+## E. coli | Average fluorescence intensity, split 2/2
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[2977:nrow(all_results_D),] %>% 
@@ -304,7 +321,7 @@ all_results_D[2977:nrow(all_results_D),] %>%
         legend.position = "bottom")
 ```
 
-## Jakie biofilmy całość
+## E. coli | Biofilm forming strength
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>% 
@@ -320,7 +337,7 @@ all_results_D %>%
         legend.position = "bottom")
 ```
 
-## Jakie biofilmy rozbite 1/2
+## E. coli | Biofilm forming strength, split 1/2
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[1:2976,] %>% 
@@ -336,7 +353,7 @@ all_results_D[1:2976,] %>%
         legend.position = "bottom")
 ```
 
-## Jakie biofilmy rozbite 2/2
+## E. coli | Biofilm forming strength, split 2/2
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[2977:nrow(all_results_D),] %>% 
