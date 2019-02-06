@@ -5,6 +5,8 @@ library(ggplot2)
 library(ggbeeswarm)
 library(tidyverse)
 
+######################################################### Wczytanie danych
+
 mydata <- read.csv("js.csv", header = FALSE, stringsAsFactors = FALSE)  # Asia
 
 start_table <- seq(1, nrow(mydata), 9)
@@ -69,6 +71,9 @@ all_results <- do.call(rbind, datalist)
 all_results <- all_results %>% 
   mutate(rep_no = rep(1:3, each = 240, times = (nrow(all_results)/720)))
 
+######################################################### koniec wczytywania danych
+
+##### Wykresy
 
 all_results %>% 
   group_by(strain, medium, rep_no, temp, surface) %>% 
@@ -158,11 +163,7 @@ all_results %>%
   scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-
-
-zo <- all_results %>% 
-  mutate(conditions = paste(temp, surface)) %>% 
-  dcast(strength ~ strain + rep_no + conditions + medium)
+##### Koniec wykresów
 
 
 
@@ -179,15 +180,18 @@ a <- all_results %>%
   mutate(conditions = paste(temp, surface)) %>% 
   group_by(strain, medium, strength, conditions) %>%
   summarise() %>% 
-  spread(strength, strength) %>% 
-  mutate(biofilm_strength = paste(moderate, absence, strong, weak))
+  spread(strength, strength)
+
+
+
  
 a[["biofilm_strength"]] %>% unique() 
   
 a %>%
   mutate(match = ifelse(a[["biofilm_strength"]] == "NA absence NA NA" || a[["biofilm_strength"]] == "NA NA NA weak", "yes", "no"))
 
-str_detect(a[["biofilm_strength"]], "NA absence NA NA" || "NA NA NA weak")
+
+str_detect(a[["biofilm_strength"]], c("NA absence NA NA", "NA NA NA weak"))
 
 
   
