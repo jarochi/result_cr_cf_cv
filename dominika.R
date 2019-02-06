@@ -57,7 +57,7 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   
   OD <- all_res %>% group_by(strain, medium, description, temp, surface) %>% summarise(avg = mean(value)) %>% 
     mutate(strength = as.character(sapply(avg, function(x) {
-      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
     })))
   
   datalist[[i]] <- inner_join(all_res, OD, by = c("strain", "medium", "temp", "surface"))
@@ -144,7 +144,7 @@ all_results %>%
   facet_wrap(c("medium", "rep_no"), ncol = 1) +
   theme_bw() +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
         legend.position="none")
 
@@ -156,7 +156,7 @@ all_results[1:2976,] %>%
   facet_wrap(c("medium", "rep_no"), ncol = 1) +
   theme_bw() +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         legend.position="none")
 
@@ -171,7 +171,7 @@ all_results %>%
   facet_wrap(c("medium", "rep_no"), ncol = 1) +
   theme_bw() +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
         legend.position="none")
 
@@ -184,7 +184,7 @@ all_results %>%
   facet_wrap(c("medium"), ncol = 1) +
   theme_bw() +
   scale_x_discrete("Strain") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
 
 
@@ -195,7 +195,7 @@ all_results[1:2976,] %>%
   facet_wrap(c("medium"), ncol = 1) +
   theme_bw() +
   scale_x_discrete("Strain") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
 
 all_results[2977:nrow(all_results),] %>% 
@@ -205,5 +205,5 @@ all_results[2977:nrow(all_results),] %>%
   facet_wrap(c("medium"), ncol = 1) +
   theme_bw() +
   scale_x_discrete("Strain") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))

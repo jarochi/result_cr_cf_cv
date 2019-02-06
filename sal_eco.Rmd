@@ -68,7 +68,7 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   
   OD <- all_res %>% group_by(strain, medium, description, temp, surface) %>% summarise(avg = mean(value)) %>% 
     mutate(strength = as.character(sapply(avg, function(x) {
-      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
     })))
   
   datalist[[i]] <- inner_join(all_res, OD, by = c("strain", "medium", "temp", "surface"))
@@ -135,7 +135,7 @@ for (i in seq(1, ceiling(nrow(mydata_D)/9))) {
   
   OD <- all_res %>% group_by(strain, medium, description, temp, surface) %>% summarise(avg = mean(value)) %>% 
     mutate(strength = as.character(sapply(avg, function(x) {
-      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
     })))
   
   datalist[[i]] <- inner_join(all_res, OD, by = c("strain", "medium", "temp", "surface"))
@@ -197,8 +197,8 @@ all_results %>%
   theme_bw() +
   scale_x_discrete("Strain") +
   scale_y_continuous("Repeat") +
-  scale_fill_discrete("Biofilm forming strength") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         legend.position = "bottom")
 ```
@@ -282,7 +282,7 @@ all_results_D[1:2976,] %>%
   theme_bw(base_size = 12) +
   scale_x_discrete("Strain") +
   scale_y_continuous("Crystal Violet") +
-  scale_fill_discrete("Repeat") +
+  scale_colour_discrete("Repeat") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
         legend.position = "bottom")
 ```
@@ -315,8 +315,7 @@ all_results_D %>%
   theme_bw() +
   scale_x_discrete("Strain") +
   scale_y_discrete("Repeat") +
-  scale_fill_discrete("Biofilm forming strength") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
         legend.position = "bottom")
 ```
@@ -332,13 +331,12 @@ all_results_D[1:2976,] %>%
   theme_bw(base_size = 12) +
   scale_x_discrete("Strain") +
   scale_y_discrete("Repeat") +
-  scale_fill_discrete("Biofilm forming strength") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
         legend.position = "bottom")
 ```
 
-## Jakie biofilmy 2/2
+## Jakie biofilmy rozbite 2/2
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D[2977:nrow(all_results_D),] %>% 
@@ -349,8 +347,7 @@ all_results_D[2977:nrow(all_results_D),] %>%
   theme_bw(base_size = 12) +
   scale_x_discrete("Strain") +
   scale_y_discrete("Repeat") +
-  scale_fill_discrete("Biofilm forming strength") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
         legend.position = "bottom")
 ```

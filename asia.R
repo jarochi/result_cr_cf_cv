@@ -3,6 +3,7 @@ library(readODS)
 library(reshape2)
 library(ggplot2)
 library(ggbeeswarm)
+library(tidyverse)
 
 mydata <- read.csv("js.csv", header = FALSE, stringsAsFactors = FALSE)  # Asia
 
@@ -56,7 +57,7 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
   
   OD <- all_res %>% group_by(strain, medium, description, temp, surface) %>% summarise(avg = mean(value)) %>% 
     mutate(strength = as.character(sapply(avg, function(x) {
-      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("no biofilm", "weak", "moderate", "strong"))
+      cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
     })))
   
   datalist[[i]] <- inner_join(all_res, OD, by = c("strain", "medium", "temp", "surface"))
@@ -128,7 +129,7 @@ all_results %>%
   theme_bw() +
   scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
-  # scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
@@ -141,7 +142,7 @@ all_results %>%
   theme_bw() +
   scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
@@ -154,7 +155,7 @@ all_results %>%
   theme_bw() +
   scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength", limits=c("no biofilm","weak", "moderate", "strong")) +
+  scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
@@ -174,9 +175,25 @@ all_results %>%
 
 
 
-all_results %>%
+a <- all_results %>%
   mutate(conditions = paste(temp, surface)) %>% 
-  group_by(strain, medium, rep_no, strength, conditions) %>%
+  group_by(strain, medium, strength, conditions) %>%
   summarise() %>% 
-  spread(strength, strength)
+  spread(strength, strength) %>% 
+  mutate(biofilm_strength = paste(moderate, absence, strong, weak))
+ 
+a[["biofilm_strength"]] %>% unique() 
+  
+a %>%
+  mutate(match = ifelse(a[["biofilm_strength"]] == "NA absence NA NA" || a[["biofilm_strength"]] == "NA NA NA weak", "yes", "no"))
+
+str_detect(a[["biofilm_strength"]], "NA absence NA NA" || "NA NA NA weak")
+
+
+  
+  mutate(match = ifelse(all_results[["moderate"]] == all_results[["absence"]] == all_results[["strong"]] == all_results[["weak"]], "yes", "no"))
+  
+  mutate(match = ifelse(c((all_results[["moderate"]] == all_results[["absence"]]) == (all_results[["strong"]] == all_results[["weak"]])), "yes", "no"))
+
+
 
