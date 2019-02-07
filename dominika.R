@@ -207,3 +207,78 @@ all_results[2977:nrow(all_results),] %>%
   scale_x_discrete("Strain") +
   # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
+
+
+
+
+
+
+
+
+
+# number of replicates
+all_results %>%
+  mutate(conditions = paste0(temp, "_", surface, "_", rep_no)) %>% 
+  group_by(strain, medium, strength, conditions) %>%
+  summarise(n = length(strength)) %>% 
+  arrange(desc(n))
+
+frac_biofilm <- all_results %>%
+  mutate(conditions = paste0(temp, "_", surface)) %>% 
+  group_by(conditions, strain, medium, strength) %>% 
+  summarise(n = length(strength)) %>% 
+  mutate(frac = n/sum(n)) %>% 
+  select(-n)
+
+# multiple types of biofilm formed
+filter(frac_biofilm, frac != 1)
+
+# only one type of biofilm formed
+zz <- filter(frac_biofilm, frac == 1)
+
+dcast(frac_biofilm, conditions + strain + medium ~ strength, fill = 0)
+
+
+
+
+
+
+
+
+filter(frac_biofilm, frac == 1) %>% 
+  ggplot(aes(x = strain, y = strength, fill = conditions)) +
+  geom_tile(color = "black", position="dodge") +
+  # facet_wrap(c("rep_no", "conditions"), ncol = 4) +
+  theme_bw() +
+  scale_fill_discrete("Conditions") +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Biofilm forming strength") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+filter(frac_biofilm, frac == 1) %>% 
+  ggplot(aes(x = strain, y = strength, fill = conditions)) +
+  geom_tile(color = "black", position="dodge") +
+  facet_wrap(c("conditions", "medium"), ncol = 1) +
+  theme_bw() +
+  scale_fill_discrete("Conditions") +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Biofilm forming strength") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+nr_different <- filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% summarise(n=length(strain))
+
+
+filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% mutate(cond = paste(conditions, medium)) %>% arrange(strain)
+
+filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% arrange(strain) %>% select(strain, medium, conditions, strength)
+
+DT::datatable(filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% arrange(strain) %>% select(strain, medium, conditions, strength))
+
+
+
+
+

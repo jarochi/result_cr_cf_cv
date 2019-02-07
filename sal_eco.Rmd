@@ -178,6 +178,33 @@ all_results_D <- do.call(rbind, datalist)
 # sort by strain
 all_results_D <- all_results_D[order(all_results_D$strain),] %>%
   mutate(ID = seq(1:nrow(all_results_D)))
+
+
+
+
+# number of replicates
+all_results_D %>%
+  mutate(conditions = paste0(temp, "_", surface, "_", rep_no)) %>% 
+  group_by(strain, medium, strength, conditions) %>%
+  summarise(n = length(strength)) %>% 
+  arrange(desc(n))
+
+frac_biofilm_D <- all_results_D %>%
+  mutate(conditions = paste0(temp, "_", surface)) %>% 
+  group_by(conditions, strain, medium, strength) %>% 
+  summarise(n = length(strength)) %>% 
+  mutate(frac = n/sum(n)) %>% 
+  select(-n)
+
+# multiple types of biofilm formed
+filter(frac_biofilm_D, frac != 1)
+
+# only one type of biofilm formed
+zz <- filter(frac_biofilm_D, frac == 1)
+
+dcast(frac_biofilm_D, conditions + strain + medium ~ strength, fill = 0)
+
+
 ```
 
 ## Overview
@@ -265,22 +292,22 @@ all_results %>%
         legend.position = "bottom")
 ```
 
-## Salmonella | Biofilm forming strength - consensus strains
+<!-- ## Salmonella | Biofilm forming strength - consensus strains -->
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
-  filter(frac_biofilm, frac == 1) %>% 
-    ggplot(aes(x = strain, y = strength, fill = conditions)) +
-    geom_tile(color = "black", position="dodge") +
-    # facet_wrap(c("rep_no", "conditions"), ncol = 4) +
-    theme_bw(base_size = 10) +
-    scale_fill_discrete("Conditions") +
-    scale_x_discrete("Strain") +
-    scale_y_discrete("Biofilm forming strength") +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 20),
-          axis.text.y = element_text(angle = 90, hjust = 1, size = 10),
-          legend.position = "bottom")
-  
-```
+<!-- ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3} -->
+<!--   filter(frac_biofilm, frac == 1) %>%  -->
+<!--     ggplot(aes(x = strain, y = strength, fill = conditions)) + -->
+<!--     geom_tile(color = "black", position="dodge") + -->
+<!--     # facet_wrap(c("rep_no", "conditions"), ncol = 4) + -->
+<!--     theme_bw(base_size = 10) + -->
+<!--     scale_fill_discrete("Conditions") + -->
+<!--     scale_x_discrete("Strain") + -->
+<!--     scale_y_discrete("Biofilm forming strength") + -->
+<!--     theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 20), -->
+<!--           axis.text.y = element_text(angle = 90, hjust = 1, size = 10), -->
+<!--           legend.position = "bottom") -->
+
+<!-- ``` -->
 
 ## Salmonella | Biofilm forming strength - consensus strains
 
@@ -299,7 +326,7 @@ all_results %>%
   
 ```
 
-## Salmonella | Biofilm forming strength - consensus strains | List
+## Salmonella | Biofilm forming strength - consensus strains | Table
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
@@ -411,7 +438,7 @@ all_results_D[2977:nrow(all_results_D),] %>%
 
 ## E. coli | Biofilm forming strength
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
 all_results_D %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   ggplot(aes(x = strain, y = rep_no, fill = strength)) +
@@ -427,7 +454,7 @@ all_results_D %>%
 
 ## E. coli | Biofilm forming strength, split 1/2
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
 all_results_D[1:2976,] %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   ggplot(aes(x = strain, y = rep_no, fill = strength)) +
@@ -443,7 +470,7 @@ all_results_D[1:2976,] %>%
 
 ## E. coli | Biofilm forming strength, split 2/2
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
 all_results_D[2977:nrow(all_results_D),] %>% 
   mutate(conditions = paste(temp, surface)) %>% 
   ggplot(aes(x = strain, y = rep_no, fill = strength)) +
@@ -456,3 +483,34 @@ all_results_D[2977:nrow(all_results_D),] %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 12),
         legend.position = "bottom")
 ```
+
+## E. coli | Biofilm forming strength - consensus strains
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=10}
+
+filter(frac_biofilm_D, frac == 1) %>% 
+  ggplot(aes(x = strain, y = strength, fill = strength)) +
+  geom_tile(color = "black", position="dodge") +
+  facet_wrap(c("conditions", "medium"), ncol = 1) +
+  theme_bw(base_size = 12) +
+  scale_fill_discrete("Conditions") +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Biofilm forming strength") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 7),
+        legend.position = "bottom")
+```
+
+## E. coli | Biofilm forming strength - consensus strains | Table
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
+
+DT::datatable(filter(frac_biofilm_D, frac == 1) %>% group_by(strain) %>% arrange(strain) %>% select(strain, medium, strength))
+  
+```
+
+
+
+
+
+
+
