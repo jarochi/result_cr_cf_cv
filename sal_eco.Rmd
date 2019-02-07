@@ -1,5 +1,5 @@
 ---
-title: "sal_eco"
+title: "Salmonella and E. coli experiments"
 output: html_document
 ---
 
@@ -237,7 +237,7 @@ For the experiment we have used collection of **Salmonella** ($n \approx 50$) an
 - Type of Plate: polystyrene
 
 
-## Salmonella | All results showed as boxplot
+## Salmonella | All results as boxplot
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 
@@ -334,13 +334,13 @@ DT::datatable(filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% arrange(s
   
 ```
 
-## Comments
+<!-- ## Comments -->
 
-6204 was repeated 6 times
+<!-- 6204 was repeated 6 times -->
 
 
 
-## E. coli | All results showed as boxplot
+## E. coli | All results as boxplot
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>% 
@@ -491,8 +491,8 @@ all_results_D[2977:nrow(all_results_D),] %>%
 filter(frac_biofilm_D, frac == 1) %>% 
   ggplot(aes(x = strain, y = strength, fill = strength)) +
   geom_tile(color = "black", position="dodge") +
-  facet_wrap(c("conditions", "medium"), ncol = 1) +
-  theme_bw(base_size = 12) +
+  facet_wrap("medium", ncol = 1) +
+  theme_bw(base_size = 20) +
   scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
   scale_y_discrete("Biofilm forming strength") +
