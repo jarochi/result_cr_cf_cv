@@ -282,8 +282,6 @@ all_results %>%
 
 
 
-
-
 ## E. coli | All results showed as boxplot
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
