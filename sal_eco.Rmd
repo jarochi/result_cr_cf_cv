@@ -508,8 +508,17 @@ DT::datatable(filter(frac_biofilm_D, frac == 1) %>% group_by(strain) %>% arrange
   
 ```
 
+## Weak biofilm formers
 
+Put here all strains that in every condition produce very weak biofilm
 
+## Strong biofilm formers
+
+Put here all strains that in every condition produce very strong biofilm
+
+## Largest change of biofilm production
+
+Put here strains that has very strong or very weak production of biofilm, depending on conditions.
 
 
 
