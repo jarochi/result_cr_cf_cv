@@ -187,19 +187,23 @@ Parsed: `r Sys.Date()`
 
 ## Aim of the project
 
+Study:
 
+ - interaction of curli-producing bacteria (selected from the collection of strains using the computational model) with mapranosis-related cell lines,
+ - regulation of biofilm formation.
+ 
 
 ## Methodology
 
-For the experiment we have used collection of **Salmonella** ($n \approx 50$) and **Escherichia** ($n \approx 200$) strains.
+For the experiment we have used collection of **Salmonella** ($n \approx 50$) and **Escherichia** ($n \approx 250$) strains.
 
-Salmonella growth conditions:
+**Salmonella** growth conditions:
 
 - Temperature: 28, 37
 - Time: 48h
 - Type of Plate: polystyrene, polypropylene
 
-E. coli growth conditions:
+**Escherichia coli** growth conditions:
 
 - Temperature: 37
 - Time: 48h
@@ -263,16 +267,43 @@ all_results %>%
 
 ## Salmonella | Biofilm forming strength - consensus strains
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
   filter(frac_biofilm, frac == 1) %>% 
     ggplot(aes(x = strain, y = strength, fill = conditions)) +
     geom_tile(color = "black", position="dodge") +
     # facet_wrap(c("rep_no", "conditions"), ncol = 4) +
-    theme_bw(base_size = 20) +
+    theme_bw(base_size = 10) +
     scale_fill_discrete("Conditions") +
     scale_x_discrete("Strain") +
     scale_y_discrete("Biofilm forming strength") +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 20))
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 20),
+          axis.text.y = element_text(angle = 90, hjust = 1, size = 10),
+          legend.position = "bottom")
+  
+```
+
+## Salmonella | Biofilm forming strength - consensus strains
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=10}
+  filter(frac_biofilm, frac == 1) %>% 
+    ggplot(aes(x = strain, y = strength, fill = conditions)) +
+    geom_tile(color = "black", position="dodge") +
+    facet_wrap(c("conditions", "medium"), ncol = 4) +
+    theme_bw(base_size = 10) +
+    scale_fill_discrete("Conditions") +
+    scale_x_discrete("Strain") +
+    scale_y_discrete("Biofilm forming strength") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10),
+          axis.text.y = element_text(angle = 90, hjust = 1, size = 10),
+          legend.position = "bottom")
+  
+```
+
+## Salmonella | Biofilm forming strength - consensus strains | List
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
+
+DT::datatable(filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% arrange(strain) %>% select(strain, medium, conditions, strength))
   
 ```
 
