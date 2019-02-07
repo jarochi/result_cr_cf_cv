@@ -82,6 +82,38 @@ all_results <- all_results %>%
 
 
 
+  # number of replicates
+  all_results %>%
+    mutate(conditions = paste0(temp, "_", surface, "_", rep_no)) %>% 
+    group_by(strain, medium, strength, conditions) %>%
+    summarise(n = length(strength)) %>% 
+    arrange(desc(n))
+  
+  frac_biofilm <- all_results %>%
+    mutate(conditions = paste0(temp, "_", surface)) %>% 
+    group_by(conditions, strain, medium, strength) %>% 
+    summarise(n = length(strength)) %>% 
+    mutate(frac = n/sum(n)) %>% 
+    select(-n)
+  
+  # multiple types of biofilm formed
+  filter(frac_biofilm, frac != 1)
+  
+  # only one type of biofilm formed
+  filter(frac_biofilm, frac == 1)
+  
+  dcast(frac_biofilm, conditions + strain + medium ~ strength, fill = 0)
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
 mydata_D <- read.csv("dk_0912.csv", header = FALSE, stringsAsFactors = FALSE)  # Dominika
 
 start_table_D <- seq(1, nrow(mydata_D), 9)
@@ -157,9 +189,21 @@ Parsed: `r Sys.Date()`
 
 
 
-## Strains used
+## Methodology
 
 For the experiment we have used collection of **Salmonella** ($n \approx 50$) and **Escherichia** ($n \approx 200$) strains.
+
+Salmonella growth conditions:
+
+- Temperature: 28, 37
+- Time: 48h
+- Type of Plate: polystyrene, polypropylene
+
+E. coli growth conditions:
+
+- Temperature: 37
+- Time: 48h
+- Type of Plate: polystyrene
 
 
 ## Salmonella | All results showed as boxplot
@@ -215,6 +259,21 @@ all_results %>%
   # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         legend.position = "bottom")
+```
+
+## Salmonella | Biofilm forming strength - consensus strains
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+  filter(frac_biofilm, frac == 1) %>% 
+    ggplot(aes(x = strain, y = strength, fill = conditions)) +
+    geom_tile(color = "black", position="dodge") +
+    # facet_wrap(c("rep_no", "conditions"), ncol = 4) +
+    theme_bw(base_size = 20) +
+    scale_fill_discrete("Conditions") +
+    scale_x_discrete("Strain") +
+    scale_y_discrete("Biofilm forming strength") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 20))
+  
 ```
 
 ## Comments

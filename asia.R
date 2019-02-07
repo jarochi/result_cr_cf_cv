@@ -168,7 +168,7 @@ all_results %>%
 
 
 a <- all_results %>%
-  mutate(conditions = paste(temp, surface)) %>% 
+  mutate(conditions = paste(temp, surface, rep_no)) %>% 
   group_by(strain, medium, strength, conditions) %>%
   summarise() %>% 
   spread(strength, strength)
@@ -192,3 +192,90 @@ str_detect(a[["biofilm_strength"]], c("NA absence NA NA", "NA NA NA weak"))
 
 
 
+
+  
+  
+  
+  
+  all_results %>%
+    mutate(conditions = paste(temp, surface)) %>% 
+    group_by(strain, medium, strength, conditions) %>%
+    summarise() %>% 
+    ungroup() %>% 
+    dcast(strain + medium ~ conditions, fun.aggregate = length)
+  
+  all_results %>%
+    mutate(conditions = paste(temp, surface, rep_no)) %>% 
+    group_by(strain, medium, strength, conditions) %>%
+    summarise() %>% 
+    group_by(strain, medium, conditions) %>% 
+    summarise(n = length(strength))
+  
+  
+  all_results %>%
+    mutate(conditions = paste(temp, surface)) %>%
+    group_by(strain, medium, strength, conditions) %>%
+    summarise() %>%
+    group_by(strain, medium, conditions) %>%
+    summarise(n = length(strength))
+  
+  
+  
+  
+  
+  
+  
+all_results %>%
+    mutate(conditions = paste0(temp, "_", surface, "_", rep_no)) %>% 
+    group_by(strain, medium, strength, conditions) %>%
+    summarise(n = length(strength)) %>% 
+    arrange(desc(n))
+  
+  all_results %>%
+    mutate(conditions = paste(temp, surface)) %>% 
+    group_by(strain, medium, strength, conditions) %>%
+    summarise() %>% 
+    group_by(strain, medium, conditions) %>% 
+    summarise(n = length(strength),
+              res = paste0(strength, collapse = ""))
+  
+  
+  # number of replicates
+  all_results %>%
+    mutate(conditions = paste0(temp, "_", surface, "_", rep_no)) %>% 
+    group_by(strain, medium, strength, conditions) %>%
+    summarise(n = length(strength)) %>% 
+    arrange(desc(n))
+  
+  frac_biofilm <- all_results %>%
+    mutate(conditions = paste0(temp, "_", surface)) %>% 
+    group_by(conditions, strain, medium, strength) %>% 
+    summarise(n = length(strength)) %>% 
+    mutate(frac = n/sum(n)) %>% 
+    select(-n)
+  
+  # multiple types of biofilm formed
+  filter(frac_biofilm, frac != 1)
+  
+  # only one type of biofilm formed
+  filter(frac_biofilm, frac == 1)
+  
+  dcast(frac_biofilm, conditions + strain + medium ~ strength, fill = 0)
+  
+
+  
+  
+  
+  
+  
+  
+  filter(frac_biofilm, frac == 1) %>% 
+    ggplot(aes(x = strain, y = strength, fill = conditions)) +
+    geom_tile(color = "black", position="dodge") +
+    # facet_wrap(c("rep_no", "conditions"), ncol = 4) +
+    theme_bw() +
+    scale_fill_discrete("Conditions") +
+    scale_x_discrete("Strain") +
+    scale_y_discrete("Biofilm forming strength") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  
