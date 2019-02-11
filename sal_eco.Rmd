@@ -217,7 +217,7 @@ Parsed: `r Sys.Date()`
 Study:
 
  - interaction of curli-producing bacteria (selected from the collection of strains using the computational model) with mapranosis-related cell lines,
- - regulation of biofilm formation.
+ - regulation of biofilm formation
  
 
 ## Methodology
@@ -237,7 +237,7 @@ For the experiment we have used collection of **Salmonella** ($n \approx 50$) an
 - Type of Plate: polystyrene
 
 
-## Salmonella | All results as boxplot
+## Salmonella | Results as boxplot
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 
@@ -256,6 +256,8 @@ all_results %>%
 ```
 
 ## Salmonella | Average fluorescence intensity
+
+Average intensity of all repeats.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results %>% 
@@ -311,7 +313,7 @@ all_results %>%
 
 ## Salmonella | Biofilm forming strength - consensus strains
 
-All replicates from single repeats are the same.
+All repeats in specific conditions match.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=10}
   filter(frac_biofilm, frac == 1) %>% 
@@ -329,8 +331,6 @@ All replicates from single repeats are the same.
 ```
 
 ## Salmonella | Biofilm forming strength - consensus strains | Table
-
-All replicates from single repeats are the same.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
@@ -391,6 +391,8 @@ all_results_D[2977:nrow(all_results_D),] %>%
 
 ## E. coli | Average fluorescence intensity
 
+Average intensity of all repeats.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
 all_results_D %>%
   group_by(strain, medium, rep_no) %>%
@@ -442,6 +444,8 @@ all_results_D[2977:nrow(all_results_D),] %>%
 
 ## E. coli | Biofilm forming strength
 
+Strains 4516, 5084, 5093, 5096, 5541 do not have second repeat due to file corruption (software saved intensiy values as dates).
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
 all_results_D %>% 
   mutate(conditions = paste(temp, surface)) %>% 
@@ -490,7 +494,7 @@ all_results_D[2977:nrow(all_results_D),] %>%
 
 ## E. coli | Biofilm forming strength - consensus strains
 
-All replicates from single repeats are the same.
+All repeats in specific conditions match.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=10}
 
@@ -501,14 +505,12 @@ filter(frac_biofilm_D, frac == 1) %>%
   theme_bw(base_size = 20) +
   scale_fill_discrete("Conditions") +
   scale_x_discrete("Strain") +
-  scale_y_discrete("Biofilm forming strength") +
+  scale_y_discrete("Biofilm forming strength", limits=c("weak", "moderate", "strong")) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 7),
         legend.position = "bottom")
 ```
 
 ## E. coli | Biofilm forming strength - consensus strains | Table
-
-All replicates from single repeats are the same.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
@@ -518,63 +520,56 @@ DT::datatable(filter(frac_biofilm_D, frac == 1) %>% group_by(strain) %>% arrange
 
 ## Absence biofilm formers
 
-There are some Salmonella strains that in every condition do not produce any biofilm
+There are some Salmonella strains that in every condition do not produce any biofilm.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
-filter(frac_biofilm, frac == 1, strength == "absence") %>% 
+DT::datatable(filter(frac_biofilm, frac == 1, strength == "absence") %>% 
   group_by(strain, conditions) %>% 
   summarise(n = length(medium)) %>% 
   filter(n == 4) %>% 
-  select(strain)
+  select(strain))
   
 ```
 
 ## Weak biofilm formers
 
-There are no strains that in every condition produce very weak biofilm
+There are no strains that in every condition produce very weak biofilm.
 
 ## Medium biofilm formers
 
-There are no strains that in every condition produce very weak biofilm
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
-
-filter(frac_biofilm_D, frac == 1, strength == "medium") %>% 
-    group_by(strain, conditions) %>% 
-    summarise(n = length(medium)) %>% 
-    filter(n == 4)
-  
-```
-
+There are no strains that in every condition produce very weak biofilm.
 
 
 ## Strong biofilm formers
 
-There are E. coli strains that in every condition produce very strong biofilm
+There are E. coli strains that in every condition produce very strong biofilm.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
-filter(frac_biofilm_D, frac == 1, strength == "strong") %>% 
+DT::datatable(filter(frac_biofilm_D, frac == 1, strength == "strong") %>% 
   group_by(strain, conditions) %>% 
   summarise(n = length(medium)) %>% 
   filter(n == 4) %>% 
-  select(strain)
+  select(strain))
   
 ```
 
-## Largest change of biofilm production
+<!-- ## Largest change of biofilm production -->
 
-Put here strains that has very strong or very weak production of biofilm, depending on conditions.
+<!-- Put here strains that has very strong or very weak production of biofilm, depending on conditions. -->
 
 ## Conclusion
 
-We have found that some of Salmonella strains do not produce any biofilm in every conditions that we have used.
+- We have found that some of Salmonella strains do not produce any biofilm in every conditions that we have used.
 
-Some E. coli strains form strong biofilms in every conditions.
+- Some E. coli strains form strong biofilms in every conditions.
 
-We have not found a single strain of Salmonella or E. coli that form weak or medium biofilm in conditions we have used.
+- We have not found a single strain of Salmonella or E. coli that form weak or medium biofilm in conditions we have used.
 
+- E. coli 6101 strain have the bigest intensity variance.
+
+- All E. coli strains produce biofilms.
 
 
 

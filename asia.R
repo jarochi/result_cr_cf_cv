@@ -266,3 +266,30 @@ aa <- filter(frac_biofilm, frac == 1, strength == "weak" | strength == "strong")
  
   
   
+  
+  filter(frac_biofilm, frac == 1, strength == "medium") %>% 
+    group_by(strain, conditions) %>% 
+    summarise(n = length(medium)) %>% 
+    filter(n == 4)
+  
+  
+  
+  
+  filter(frac_biofilm, frac == 1) %>% 
+    group_by(strain) %>% 
+    summarise(n = length(strain)) %>% 
+    filter(n == 4)
+  
+  
+  %>% 
+    group_by(strain, conditions) %>% 
+    summarise(n = length(medium)) %>% 
+    filter(n == 4)
+  
+  
+  
+  
+  
+  
+  
+  
