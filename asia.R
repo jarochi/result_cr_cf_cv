@@ -184,7 +184,7 @@ all_results %>%
   filter(frac_biofilm, frac != 1)
   
   # only one type of biofilm formed
-  zz <- filter(frac_biofilm, frac == 1)
+  filter(frac_biofilm, frac == 1)
   
   dcast(frac_biofilm, conditions + strain + medium ~ strength, fill = 0)
   
@@ -228,6 +228,38 @@ all_results %>%
  
  DT::datatable(filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% arrange(strain) %>% select(strain, medium, conditions, strength))
  
+ 
+ 
+ 
+ ## Weak biofilm formers
+ 
+ Put here all strains that in every condition produce very weak biofilm
+ 
+ ## Strong biofilm formers
+ 
+ Put here all strains that in every condition produce very strong biofilm
+ 
+ ## Largest change of biofilm production
+ 
+ Put here strains that has very strong or very weak production of biofilm, depending on conditions.
+ 
+ 
+ 
+ # only one type of biofilm formed | only weak
+filter(frac_biofilm, frac == 1, strength == "weak") %>% 
+   group_by(strain, conditions) %>% 
+   summarise(n = length(medium)) %>% 
+   filter(n == 4)
+
+ 
+filter(frac_biofilm, frac == 1, strength == "strong") %>% 
+   group_by(strain, conditions) %>% 
+   summarise(n = length(medium)) %>% 
+   filter(n == 4) %>% 
+   summarise(n_c = length(conditions)) %>% 
+   filter(n_c == 4)
+ 
+  
  
  
   

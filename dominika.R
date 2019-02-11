@@ -234,7 +234,7 @@ frac_biofilm <- all_results %>%
 filter(frac_biofilm, frac != 1)
 
 # only one type of biofilm formed
-zz <- filter(frac_biofilm, frac == 1)
+filter(frac_biofilm, frac == 1)
 
 dcast(frac_biofilm, conditions + strain + medium ~ strength, fill = 0)
 
@@ -281,4 +281,16 @@ DT::datatable(filter(frac_biofilm, frac == 1) %>% group_by(strain) %>% arrange(s
 
 
 
+# only one type of biofilm formed | only weak
+filter(frac_biofilm, frac == 1, strength == "weak") %>% 
+  group_by(strain, conditions) %>% 
+  summarise(n = length(medium)) %>% 
+  filter(n == 4)
+
+
+filter(frac_biofilm, frac == 1, strength == "strong") %>% 
+  group_by(strain, conditions) %>% 
+  summarise(n = length(medium)) %>% 
+  filter(n == 4) %>% 
+  select(strain)
 
