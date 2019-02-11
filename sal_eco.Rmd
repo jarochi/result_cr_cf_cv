@@ -311,6 +311,8 @@ all_results %>%
 
 ## Salmonella | Biofilm forming strength - consensus strains
 
+All replicates from single repeats are the same.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=10}
   filter(frac_biofilm, frac == 1) %>% 
     ggplot(aes(x = strain, y = strength, fill = conditions)) +
@@ -327,6 +329,8 @@ all_results %>%
 ```
 
 ## Salmonella | Biofilm forming strength - consensus strains | Table
+
+All replicates from single repeats are the same.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
@@ -486,6 +490,8 @@ all_results_D[2977:nrow(all_results_D),] %>%
 
 ## E. coli | Biofilm forming strength - consensus strains
 
+All replicates from single repeats are the same.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=10}
 
 filter(frac_biofilm_D, frac == 1) %>% 
@@ -502,19 +508,17 @@ filter(frac_biofilm_D, frac == 1) %>%
 
 ## E. coli | Biofilm forming strength - consensus strains | Table
 
+All replicates from single repeats are the same.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
 DT::datatable(filter(frac_biofilm_D, frac == 1) %>% group_by(strain) %>% arrange(strain) %>% select(strain, medium, strength))
   
 ```
 
-## Weak biofilm formers
-
-Put here all strains that in every condition produce very weak biofilm
-
 ## Absence biofilm formers
 
-Put here all strains that in every condition produce very weak biofilm
+There are some Salmonella strains that in every condition do not produce any biofilm
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
@@ -526,9 +530,28 @@ filter(frac_biofilm, frac == 1, strength == "absence") %>%
   
 ```
 
+## Weak biofilm formers
+
+There are no strains that in every condition produce very weak biofilm
+
+## Medium biofilm formers
+
+There are no strains that in every condition produce very weak biofilm
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
+
+filter(frac_biofilm_D, frac == 1, strength == "medium") %>% 
+    group_by(strain, conditions) %>% 
+    summarise(n = length(medium)) %>% 
+    filter(n == 4)
+  
+```
+
+
+
 ## Strong biofilm formers
 
-Put here all strains that in every condition produce very strong biofilm
+There are E. coli strains that in every condition produce very strong biofilm
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
@@ -543,6 +566,16 @@ filter(frac_biofilm_D, frac == 1, strength == "strong") %>%
 ## Largest change of biofilm production
 
 Put here strains that has very strong or very weak production of biofilm, depending on conditions.
+
+## Conclusion
+
+We have found that some of Salmonella strains do not produce any biofilm in every conditions that we have used.
+
+Some E. coli strains form strong biofilms in every conditions.
+
+We have not found a single strain of Salmonella or E. coli that form weak or medium biofilm in conditions we have used.
+
+
 
 
 
