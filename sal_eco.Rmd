@@ -512,6 +512,20 @@ DT::datatable(filter(frac_biofilm_D, frac == 1) %>% group_by(strain) %>% arrange
 
 Put here all strains that in every condition produce very weak biofilm
 
+## Absence biofilm formers
+
+Put here all strains that in every condition produce very weak biofilm
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
+
+filter(frac_biofilm, frac == 1, strength == "absence") %>% 
+  group_by(strain, conditions) %>% 
+  summarise(n = length(medium)) %>% 
+  filter(n == 4) %>% 
+  select(strain)
+  
+```
+
 ## Strong biofilm formers
 
 Put here all strains that in every condition produce very strong biofilm

@@ -246,7 +246,7 @@ all_results %>%
  
  
  # only one type of biofilm formed | only weak
-filter(frac_biofilm, frac == 1, strength == "weak") %>% 
+filter(frac_biofilm, frac == 1, strength == "absence") %>% 
    group_by(strain, conditions) %>% 
    summarise(n = length(medium)) %>% 
    filter(n == 4)
