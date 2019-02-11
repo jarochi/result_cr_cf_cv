@@ -514,9 +514,11 @@ Put here all strains that in every condition produce very weak biofilm
 
 ## Strong biofilm formers
 
+Put here all strains that in every condition produce very strong biofilm
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=3}
 
-filter(frac_biofilm, frac == 1, strength == "strong") %>% 
+filter(frac_biofilm_D, frac == 1, strength == "strong") %>% 
   group_by(strain, conditions) %>% 
   summarise(n = length(medium)) %>% 
   filter(n == 4) %>% 

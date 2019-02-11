@@ -261,6 +261,8 @@ filter(frac_biofilm, frac == 1, strength == "strong") %>%
  
   
  
+aa <- filter(frac_biofilm, frac == 1, strength == "weak" | strength == "strong") 
+  group_by(strain, conditions, medium)
  
   
   
