@@ -10,7 +10,7 @@ library(reshape2)
 library(ggplot2)
 library(ggbeeswarm)
 
-mydata <- read.csv("js.csv", header = FALSE, stringsAsFactors = FALSE)  # Asia
+mydata <- read.csv("data/js.csv", header = FALSE, stringsAsFactors = FALSE)  # Asia
 
 start_table <- seq(1, nrow(mydata), 9)
 end_table <- start_table + 8

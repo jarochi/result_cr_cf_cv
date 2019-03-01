@@ -4,7 +4,7 @@ library(reshape2)
 library(ggplot2)
 library(ggbeeswarm)
 
-mydata <- read.csv("dk_0912.csv", header = FALSE, stringsAsFactors = FALSE)  # Dominika
+mydata <- read.csv("data/dk_0912.csv", header = FALSE, stringsAsFactors = FALSE)  # Dominika
 
 start_table <- seq(1, nrow(mydata), 9)
 end_table <- start_table + 8

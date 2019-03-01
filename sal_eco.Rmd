@@ -16,7 +16,7 @@ library(reshape2)
 library(ggplot2)
 library(ggbeeswarm)
 
-mydata <- read.csv("js.csv", header = FALSE, stringsAsFactors = FALSE)  # Asia
+mydata <- read.csv("data/js.csv", header = FALSE, stringsAsFactors = FALSE)  # Asia
 
 start_table <- seq(1, nrow(mydata), 9)
 end_table <- start_table + 8
@@ -114,7 +114,7 @@ all_results <- all_results %>%
 
 
 
-mydata_D <- read.csv("dk_0912.csv", header = FALSE, stringsAsFactors = FALSE)  # Dominika
+mydata_D <- read.csv("data/dk_0912.csv", header = FALSE, stringsAsFactors = FALSE)  # Dominika
 
 start_table_D <- seq(1, nrow(mydata_D), 9)
 end_table_D <- start_table_D + 8
