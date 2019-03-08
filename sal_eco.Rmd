@@ -71,7 +71,7 @@ for (i in seq(1, ceiling(nrow(mydata)/9))) {
       cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
     })))
   
-  datalist[[i]] <- inner_join(all_res, OD, by = c("strain", "medium", "temp", "surface"))
+  datalist[[i]] <- inner_join(all_res, OD, by = c("strain", "medium", "temp", "surface", "description"))
 } 
 
 all_results <- do.call(rbind, datalist)
@@ -79,7 +79,6 @@ all_results <- do.call(rbind, datalist)
 # Asia
 all_results <- all_results %>% 
   mutate(rep_no = rep(1:3, each = 240, times = (nrow(all_results)/720)))
-
 
 
   # number of replicates
@@ -276,6 +275,7 @@ all_results %>%
         legend.position = "bottom")
 ```
 
+
 ## Salmonella | Biofilm forming strength
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
@@ -310,6 +310,7 @@ all_results %>%
 <!--           legend.position = "bottom") -->
 
 <!-- ``` -->
+
 
 ## Salmonella | Biofilm forming strength - consensus strains
 
@@ -572,6 +573,324 @@ DT::datatable(filter(frac_biofilm_D, frac == 1, strength == "strong") %>%
 - All E. coli strains produce biofilms.
 
 
+
+
+## Salmonella | Average fluorescence intensity | mean = replicates + repeats
+
+Average intensity of all repeats.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, conditions) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = conditions)) +
+  geom_point(size = 3) +
+  facet_wrap(c("medium"), ncol = 2) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Conditions") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
+```
+
+## Salmonella | Average fluorescence intensity | mean = replicates + repeats + median
+
+Average intensity of all repeats.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, conditions) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = conditions)) +
+  geom_point(size = 3) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Conditions") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
+```
+
+## Salmonella | Biofilm forming strength | mean = replicates + repeats
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results %>% 
+  mutate(conditions = paste(temp, surface, medium)) %>% 
+  group_by(strain, conditions) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ggplot(aes(x = strain, y = conditions, fill = strength_all)) +
+  geom_tile(color = "black") +
+  # facet_wrap(c("medium", "conditions"), ncol = 4) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
+```
+
+## Salmonella | Biofilm forming strength | mean = replicates + repeats + medium
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, conditions) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = strain, y = conditions, fill = strength_all)) +
+  geom_tile(color = "black") +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  # scale_y_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
+```
+
+## E. coli | Average fluorescence intensity | mean = replicates + repeats
+
+Average intensity of all repeats.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D %>%
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, conditions) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = conditions)) +
+  geom_point(size = 3) +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+
+```
+
+## E. coli | Average fluorescence intensity, split 1/2 | mean = replicates + repeats
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[1:2976,] %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, conditions) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = conditions)) +
+  geom_point(size = 3) +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## E. coli | Average fluorescence intensity, split 2/2 | mean = replicates + repeats
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[2977:nrow(all_results_D),] %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, conditions) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value, color = conditions)) +
+  geom_point(size = 3) +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+
+
+## E. coli | Average fluorescence intensity | mean = replicates + repeats + medium
+
+Average intensity of all repeats.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D %>%
+  group_by(strain) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value)) +
+  geom_point(size = 3) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+
+```
+
+## E. coli | Average fluorescence intensity, split 1/2 | mean = replicates + repeats + medium
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[1:2976,] %>% 
+  group_by(strain) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value)) +
+  geom_point(size = 3) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## E. coli | Average fluorescence intensity, split 2/2 | mean = replicates + repeats + medium
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=12}
+all_results_D[2977:nrow(all_results_D),] %>% 
+  group_by(strain) %>%
+  summarise(value = median(value)) %>%
+  ggplot(aes(x = strain, y = value)) +
+  geom_point(size = 3) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_continuous("Crystal Violet") +
+  scale_fill_discrete("Repeat") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+
+
+## E. coli | Biofilm forming strength | mean = replicates + repeats
+
+Strains 4516, 5084, 5093, 5096, 5541 do not have second repeat due to file corruption (software saved intensiy values as dates).
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
+all_results_D %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, conditions) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ggplot(aes(x = strain, y = strength_all, fill = strength_all)) +
+  geom_tile(color = "black") +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## E. coli | Biofilm forming strength, split 1/2 | mean = replicates + repeats
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
+all_results_D[1:2976,] %>%
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, conditions) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ggplot(aes(x = strain, y = strength_all, fill = strength_all)) +
+  geom_tile(color = "black") +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## E. coli | Biofilm forming strength, split 2/2 | mean = replicates + repeats
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
+all_results_D[2977:nrow(all_results_D),] %>% 
+  mutate(conditions = paste(temp, surface)) %>% 
+  group_by(strain, medium, conditions) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ggplot(aes(x = strain, y = strength_all, fill = strength_all)) +
+  geom_tile(color = "black") +
+  facet_wrap(c("medium"), ncol = 1) +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## E. coli | Biofilm forming strength | mean = replicates + repeats + medium
+
+Strains 4516, 5084, 5093, 5096, 5541 do not have second repeat due to file corruption (software saved intensiy values as dates).
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
+all_results_D %>% 
+  group_by(strain) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ggplot(aes(x = strain, y = strength_all, fill = strength_all)) +
+  geom_tile(color = "black") +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## E. coli | Biofilm forming strength, split 1/2 | mean = replicates + repeats + medium
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
+all_results_D[1:2976,] %>%
+  group_by(strain) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ggplot(aes(x = strain, y = strength_all, fill = strength_all)) +
+  geom_tile(color = "black") +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
+
+## E. coli | Biofilm forming strength, split 2/2 | mean = replicates + repeats + medium
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=20, fig.height=6}
+all_results_D[2977:nrow(all_results_D),] %>% 
+  group_by(strain) %>%
+  summarise(avg_all = mean(value)) %>%
+  mutate(strength_all = as.character(sapply(avg_all, function(x) {
+  cut(x, breaks = c(0, ODc, 2*ODc, 4*ODc, 10), labels = c("absence", "weak", "moderate", "strong"))
+}))) %>% 
+  ggplot(aes(x = strain, y = strength_all, fill = strength_all)) +
+  geom_tile(color = "black") +
+  theme_bw() +
+  scale_x_discrete("Strain") +
+  scale_y_discrete("Repeat") +
+  scale_fill_discrete("Biofilm forming strength", limits=c("absence","weak", "moderate", "strong")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+        legend.position = "bottom")
+```
 
 
 
